@@ -53,7 +53,7 @@
 </script>
 
 <template>
-  <a-breadcrumb>
+  <!-- <a-breadcrumb>
     <template v-for="(routeItem, rotueIndex) in menus" :key="routeItem?.name">
       <a-breadcrumb-item>
         <TitleI18n :title="routeItem?.meta?.title" class="cursor-pointer" />
@@ -72,6 +72,11 @@
         </template>
       </a-breadcrumb-item>
     </template>
+  </a-breadcrumb> -->
+  <a-breadcrumb>
+    <a-breadcrumb-item v-for="routeItem in menus" :key="routeItem?.name">
+      <TitleI18n :title="routeItem.meta?.title" />
+    </a-breadcrumb-item>
   </a-breadcrumb>
 </template>
 

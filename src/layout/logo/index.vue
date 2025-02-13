@@ -1,7 +1,7 @@
 <template>
   <div class="logo">
     <img src="~@/assets/images/logo.png" alt="" />
-    <h2 v-show="!collapsed" class="title">One Piece</h2>
+    <div v-show="!collapsed" class="title">西安市第十三中学</div>
   </div>
 </template>
 
@@ -15,11 +15,8 @@
 
 <style lang="less" scoped>
   .logo {
-    @apply flex overflow-hidden whitespace-nowrap items-center;
-
-    height: 64px;
-    padding-left: 24px;
-    line-height: 64px;
+    display: flex;
+    align-items: center;
 
     img {
       height: 32px;
@@ -27,9 +24,10 @@
     }
 
     .title {
-      @apply mb-0 text-xl;
-
-      color: var(--app-primary-color);
+      color: #2e3649;
+      font-size: 17px;
+      font-style: normal;
+      line-height: 32px;
     }
   }
 </style>

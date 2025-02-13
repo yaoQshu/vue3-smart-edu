@@ -1,6 +1,6 @@
 <template>
   <div class="tabs-view">
-    <a-tabs
+    <!-- <a-tabs
       :active-key="activeKey"
       hide-add
       type="editable-card"
@@ -19,7 +19,7 @@
       <template #rightExtra>
         <TabsOperator :tab-item="route" :is-extra="true" />
       </template>
-    </a-tabs>
+    </a-tabs> -->
     <div class="tabs-view-content" :style="{ overflow }">
       <router-view v-slot="{ Component }">
         <template v-if="Component">

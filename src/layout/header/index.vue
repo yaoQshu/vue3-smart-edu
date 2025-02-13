@@ -16,7 +16,7 @@
     <div class="header-menu">
       <slot name="menu" />
     </div>
-    <div class="header-right">
+    <!-- <div class="header-right">
       <Space :size="20">
         <Search />
         <Tooltip :title="$t('layout.header.tooltipLock')" placement="bottom">
@@ -42,7 +42,7 @@
         </Dropdown>
         <ProjectSetting />
       </Space>
-    </div>
+    </div> -->
   </Layout.Header>
 </template>
 
@@ -53,22 +53,9 @@
     QuestionCircleOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
-    PoweroffOutlined,
-    LockOutlined,
   } from '@ant-design/icons-vue';
-  import {
-    Layout,
-    message,
-    Modal,
-    Dropdown,
-    Menu,
-    Space,
-    Avatar,
-    Tooltip,
-    type MenuTheme,
-  } from 'ant-design-vue';
-  import { Search, FullScreen, ProjectSetting, LayoutBreadcrumb } from './components/';
-  import { LocalePicker } from '@/components/basic/locale-picker';
+  import { Layout, message, Modal, Space, type MenuTheme } from 'ant-design-vue';
+  import { LayoutBreadcrumb } from './components/';
   import { useUserStore } from '@/store/modules/user';
   import { useKeepAliveStore } from '@/store/modules/keepAlive';
   import { useLockscreenStore } from '@/store/modules/lockscreen';
@@ -132,7 +119,7 @@
     top: 0;
     align-items: center;
     justify-content: space-between;
-    height: var(--app-header-height);
+    height: 50px;
     padding: 0 20px;
 
     .header-right {
