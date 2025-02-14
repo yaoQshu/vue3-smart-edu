@@ -1,25 +1,5 @@
 <template>
   <div class="tabs-view">
-    <!-- <a-tabs
-      :active-key="activeKey"
-      hide-add
-      type="editable-card"
-      class="tabs"
-      @change="changePage"
-      @edit="editTabItem"
-    >
-      <a-tab-pane v-for="tabItem in tabsViewStore.getTabsList" :key="tabItem.fullPath">
-        <template #tab>
-          <TabsOperator
-            :ref="(ins: TabsOperatorInstance) => (itemRefs[tabItem.fullPath] = ins)"
-            :tab-item="tabItem"
-          />
-        </template>
-      </a-tab-pane>
-      <template #rightExtra>
-        <TabsOperator :tab-item="route" :is-extra="true" />
-      </template>
-    </a-tabs> -->
     <div class="tabs-view-content" :style="{ overflow }">
       <router-view v-slot="{ Component }">
         <template v-if="Component">
@@ -144,8 +124,9 @@
     .tabs-view-content {
       /* height: calc(100vh - #{$header-height}); */
       height: calc(100vh - 110px - var(--app-footer-height));
-      padding: 20px 14px 0;
+      margin: 12px;
       overflow: auto;
+      // background-color: #fff;
     }
   }
 </style>

@@ -1,12 +1,12 @@
 <template>
   <Layout>
-    <Layout>
+    <Layout.Header style="padding-inline: 0">
       <div class="top-header">
         <Logo />
         <div>勤学善思 励志笃行</div>
         <a-button type="primary" ghost>返回校园应用</a-button>
       </div>
-    </Layout>
+    </Layout.Header>
     <Layout class="layout">
       <Layout.Sider
         v-if="layoutSetting.layout === 'sidemenu'"
@@ -20,18 +20,10 @@
         <AsideMenu :collapsed="collapsed" :theme="getTheme" />
       </Layout.Sider>
       <Layout>
-        <PageHeader v-model:collapsed="collapsed" :theme="getTheme">
-          <template v-if="layoutSetting.layout === 'topmenu'" #left>
-            <Logo :collapsed="collapsed" />
-          </template>
-          <template v-if="layoutSetting.layout === 'topmenu'" #menu>
-            <AsideMenu :collapsed="collapsed" :theme="getTheme" />
-          </template>
-        </PageHeader>
+        <LayoutBreadcrumb class="sub-header" />
         <Layout.Content class="layout-content">
           <tabs-view />
         </Layout.Content>
-        <PageFooter />
       </Layout>
     </Layout>
   </Layout>
@@ -43,9 +35,8 @@
   import { Layout } from 'ant-design-vue';
   import Logo from './logo/index.vue';
   import { TabsView } from './tabs';
+  import { LayoutBreadcrumb } from './header/components/';
   import AsideMenu from './menu/menu.vue';
-  import PageHeader from './header/index.vue';
-  import PageFooter from './footer';
   import { useLayoutSettingStore } from '@/store/modules/layoutSetting';
 
   const layoutSettingStore = useLayoutSettingStore();
@@ -70,6 +61,11 @@
     color: #2e3649;
     font-size: 17px;
     font-style: normal;
+  }
+
+  .sub-header {
+    padding: 16px;
+    background-color: #fff;
   }
 
   .layout {

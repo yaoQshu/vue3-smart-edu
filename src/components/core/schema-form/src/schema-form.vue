@@ -3,6 +3,7 @@
     ref="schemaFormRef"
     v-bind="pick(getFormProps, aFormPropKeys)"
     :model="formModel"
+    :colon="false"
     @keypress.enter="handleEnterPress"
   >
     <Row v-bind="getRowConfig">

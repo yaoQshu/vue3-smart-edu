@@ -53,26 +53,6 @@
 </script>
 
 <template>
-  <!-- <a-breadcrumb>
-    <template v-for="(routeItem, rotueIndex) in menus" :key="routeItem?.name">
-      <a-breadcrumb-item>
-        <TitleI18n :title="routeItem?.meta?.title" class="cursor-pointer" />
-        <template v-if="routeItem?.children?.length" #overlay>
-          <a-menu :selected-keys="getSelectKeys(rotueIndex)">
-            <template v-for="childItem in routeItem?.children" :key="childItem.name">
-              <a-menu-item
-                v-if="!childItem.meta?.hideInMenu && !childItem.meta?.hideInBreadcrumb"
-                :key="childItem.name"
-                @click="clickMenuItem(childItem)"
-              >
-                <TitleI18n :title="childItem.meta?.title" />
-              </a-menu-item>
-            </template>
-          </a-menu>
-        </template>
-      </a-breadcrumb-item>
-    </template>
-  </a-breadcrumb> -->
   <a-breadcrumb>
     <a-breadcrumb-item v-for="routeItem in menus" :key="routeItem?.name">
       <TitleI18n :title="routeItem.meta?.title" />

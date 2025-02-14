@@ -96,6 +96,7 @@
 <style lang="less" scoped>
   .menu-container {
     width: 100%;
+    padding-top: 20px;
     overflow: auto;
 
     &::-webkit-scrollbar {

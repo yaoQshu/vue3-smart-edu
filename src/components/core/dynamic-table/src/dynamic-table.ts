@@ -66,7 +66,7 @@ export const dynamicTableProps = {
   /** 是否显示表格工具栏 */
   showToolBar: {
     type: Boolean as PropType<boolean>,
-    default: true,
+    default: false,
   },
   /** 是否显示表格设置 */
   showTableSetting: {

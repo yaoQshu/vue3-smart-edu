@@ -467,4 +467,8 @@
       flex: auto;
     }
   }
+
+  :deep(.ant-form-item) {
+    margin-bottom: 16px;
+  }
 </style>

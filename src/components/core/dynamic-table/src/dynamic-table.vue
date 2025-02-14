@@ -5,7 +5,7 @@
         <SchemaForm
           v-if="innerPropsRef.search"
           ref="searchFormRef"
-          class="bg-white dark:bg-black mb-16px !pt-24px pr-24px"
+          class="bg-white dark:bg-black !pt-24px pr-24px"
           submit-on-reset
           v-bind="getFormProps"
           :table-instance="dynamicTableContext"
@@ -152,6 +152,10 @@
         cursor: zoom-in;
       }
     }
+  }
+
+  :deep(.ant-pagination-total-text) {
+    flex: 1;
   }
 
   .actions > * {
