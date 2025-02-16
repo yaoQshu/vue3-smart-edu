@@ -1,10 +1,9 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
-import { useLockscreenStore } from './lockscreen';
 import { useSSEStore } from './sse';
 import type { RouteRecordRaw } from 'vue-router';
 import { store } from '@/store';
-import Api from '@/api/';
+import { EduApi, Api } from '@/api/';
 import { resetRouter } from '@/router';
 import { generateDynamicRoutes } from '@/router/helper/routeHelper';
 
@@ -12,7 +11,6 @@ export const useUserStore = defineStore(
   'user',
   () => {
     const sseStore = useSSEStore();
-    const lockscreenStore = useLockscreenStore();
     const token = ref<string>();
     const perms = ref<string[]>([]);
     const menus = ref<RouteRecordRaw[]>([]);
@@ -48,11 +46,9 @@ export const useUserStore = defineStore(
     /** 登录 */
     const login = async (params: API.LoginDto) => {
       try {
-        const data = await Api.auth.authLogin(params);
+        const data = await EduApi.user.loginByPassword(params);
         setToken(data.token);
         await afterLogin();
-        lockscreenStore.setLock(false);
-        lockscreenStore.saveLoginPwd(params.password);
       } catch (error) {
         return Promise.reject(error);
       }
@@ -60,9 +56,9 @@ export const useUserStore = defineStore(
     /** 登录成功之后, 获取用户信息以及生成权限路由 */
     const afterLogin = async () => {
       try {
-        const { accountProfile } = Api.account;
+        const { getCurrentUser } = EduApi.user;
         // const wsStore = useWsStore();
-        const userInfoData = await accountProfile();
+        const userInfoData = await getCurrentUser();
 
         userInfo.value = userInfoData;
         await fetchPermsAndMenus();
@@ -76,7 +72,9 @@ export const useUserStore = defineStore(
     const fetchPermsAndMenus = async () => {
       const { accountPermissions, accountMenu } = Api.account;
       // const wsStore = useWsStore();
-      const [menusData, permsData] = await Promise.all([accountMenu(), accountPermissions()]);
+      // const [menusData, permsData] = await Promise.all([accountMenu(), accountPermissions()]);
+      const menusData = [];
+      const permsData = [];
       perms.value = permsData;
       const result = generateDynamicRoutes(menusData as unknown as RouteRecordRaw[]);
       menus.value = sortMenus(result);

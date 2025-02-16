@@ -6,18 +6,19 @@
         size="small"
         :loading="loadingMap.get(getKey(actionItem, index))"
         v-bind="actionItem"
+        :style="{ color: actionItem.color, padding: '0 16px 0 0' }"
       >
         {{ actionItem.label }}
       </a-button>
     </ActionItemRender>
-    <a-divider v-if="divider && index < getActions.length - 1" type="vertical" />
+    <!-- <a-divider v-if="divider && index < getActions.length - 1" type="vertical" /> -->
   </template>
 </template>
 
 <script lang="tsx" setup>
   import { computed, ref, h, type FunctionalComponent } from 'vue';
   import { isFunction, isObject, isString } from 'lodash-es';
-  import { Popconfirm, Tooltip, type TooltipProps } from 'ant-design-vue';
+  import { Modal, Popconfirm, Tooltip, type TooltipProps } from 'ant-design-vue';
   import type { ActionItem } from '../types/tableAction';
   import type { CustomRenderParams } from '../types/column';
   import { hasPermission } from '@/permission';
@@ -87,8 +88,31 @@
       })
       .map((item, index) => {
         const onClick = item.onClick;
+        const modalConfirm = item.modalConfirm;
+        const popConfirm = item.popConfirm;
 
-        if (isFunction(onClick) && !hasClickFnFlag(onClick)) {
+        if (modalConfirm && !popConfirm) {
+          console.log('modalConfirm', modalConfirm);
+          item.onClick = async () => {
+            Modal.confirm({
+              title: modalConfirm.title,
+              content: modalConfirm.content,
+              okText: modalConfirm.okText || '确定',
+              cancelText: modalConfirm.cancelText || '取消',
+              onOk() {
+                const callbackRes = modalConfirm.onConfirm(props.columnParams);
+
+                if (isPromise(callbackRes)) {
+                  const key = getKey(item, index);
+                  loadingMap.value.set(key, true);
+                  callbackRes.finally(() => {
+                    loadingMap.value.delete(key);
+                  });
+                }
+              },
+            });
+          };
+        } else if (isFunction(onClick) && !hasClickFnFlag(onClick)) {
           item.onClick = async () => {
             const callbackRes = onClick(props.columnParams);
 
@@ -100,6 +124,7 @@
               });
             }
           };
+
           setClickFnFlag(item.onClick);
         }
         if (item.icon) {

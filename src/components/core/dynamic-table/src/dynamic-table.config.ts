@@ -18,7 +18,7 @@ export default {
   // Default display quantity on one page
   defaultPageSize: 10,
   // Default layout of table cells
-  defaultAlign: 'center' as AlignType,
+  defaultAlign: 'left' as AlignType,
   // Custom general sort function
   defaultSortFn: (sortInfo: SorterResult) => {
     const { field, order } = sortInfo;

@@ -69,7 +69,6 @@
   const rowSelection = ref({
     selectedRowKeys: [] as number[],
     onChange: (selectedRowKeys: number[], selectedRows: TableListItem[]) => {
-      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
       rowSelection.value.selectedRowKeys = selectedRowKeys;
     },
   });

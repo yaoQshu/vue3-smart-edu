@@ -43,7 +43,6 @@ export function useFormDrawer<T extends object = Recordable>() {
     };
 
     await DrawerRender.show({
-      destroyOnClose: true,
       ...omit(drawerProps, ['onFinish', 'onFail']),
       onCancel,
       onOk,

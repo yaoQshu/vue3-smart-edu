@@ -1,6 +1,6 @@
 <template>
-  <div class="tabs-view">
-    <div class="tabs-view-content" :style="{ overflow }">
+  <div id="tabs-view" class="tabs-view">
+    <div id="tabs-view-content" class="tabs-view-content" :style="{ overflow }">
       <router-view v-slot="{ Component }">
         <template v-if="Component">
           <Suspense>

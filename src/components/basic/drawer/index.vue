@@ -4,6 +4,7 @@
       <Drawer
         v-bind="omit(props, ['open', 'onCancel', 'onOk', 'onUpdate:open'])"
         v-model:open="openDrawer"
+        :closable="false"
         :mask-closable="true"
         :width="innerWidth || width"
         @close="closeDrawer"
@@ -11,14 +12,14 @@
         <template #title>
           <slot name="title">{{ $attrs.title || '标题' }}</slot>
         </template>
-        <slot> custom drawer </slot>
-        <template v-if="$slots.footer" #footer>
-          <slot name="footer" />
-        </template>
         <template #extra>
-          <Space>
-            <Button @click="emit('cancel')">Cancel</Button>
-            <Button type="primary" @click="emit('ok')">Submit</Button>
+          <Icon icon="icon-park-outline:close" @click="emit('cancel')" />
+        </template>
+        <slot> custom drawer </slot>
+        <template #footer>
+          <Space class="w-full justify-end">
+            <Button @click="emit('cancel')">取消</Button>
+            <Button type="primary" @click="emit('ok')">保存</Button>
           </Space>
         </template>
       </Drawer>

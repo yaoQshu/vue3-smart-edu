@@ -1,5 +1,6 @@
 import Api from './backend/api';
+import EduApi from './backend/edu';
 
-export { Api };
+export { Api, EduApi };
 
 export default Api;

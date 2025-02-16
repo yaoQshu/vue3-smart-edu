@@ -8,9 +8,9 @@
     "pnpm": ">=9.0.2"
   },
   "author": {
-    "name": "buqiyuan",
-    "email": "1743369777@qq.com",
-    "url": "https://github.com/buqiyuan"
+    "name": "yaoQshu",
+    "email": "yaoguoc@126.com",
+    "url": "https://github.com/yaoQshu"
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
@@ -133,9 +133,9 @@
   "__npminstall_done": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/buqiyuan/vue3-antdv-admin"
+    "url": "https://github.com/yaoQshu/vue3-smart-edu"
   },
-  "homepage": "https://buqiyuan.gitee.io/vue3-antdv-admin",
+  "homepage": "https://github.com/yaoQshu/vue3-smart-edu",
   "keywords": [
     "vue",
     "ant-design-vue",

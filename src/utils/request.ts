@@ -45,7 +45,7 @@ service.interceptors.request.use(
     const token = userStore.token;
     if (token && config.headers) {
       // 请求头token信息，请根据实际情况进行修改
-      config.headers['Authorization'] = `Bearer ${token}`;
+      config.headers['x-token'] = `${token}`;
     }
     return config;
   },
@@ -149,8 +149,22 @@ export async function request(_url: string | RequestOptions, _config: RequestOpt
 
     // 页面代码需要获取 code，data，message 等信息时，需要将 isReturnResult 设置为 false
     if (!isReturnResult) {
+      console.log('data', data);
       return data;
     } else {
+      console.log('data2', data);
+      if (data.data?.hasOwnProperty('total')) {
+        return {
+          items: data.data.records,
+          meta: {
+            itemCount: data.data.total,
+            totalItems: data.data.total,
+            itemsPerPage: data.data.size,
+            totalPages: data.data.pages,
+            currentPage: data.data.current,
+          },
+        };
+      }
       return data.data;
     }
   } catch (error: any) {

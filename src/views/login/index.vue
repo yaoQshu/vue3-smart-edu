@@ -7,7 +7,7 @@
     </div>
     <a-form layout="horizontal" :model="loginFormModel" @submit.prevent="handleSubmit">
       <a-form-item>
-        <a-input v-model:value="loginFormModel.username" size="large" placeholder="admin">
+        <a-input v-model:value="loginFormModel.phone" size="large" placeholder="admin">
           <template #prefix> <Icon icon="ant-design:user-outlined" /> </template>
         </a-input>
       </a-form-item>
@@ -24,9 +24,9 @@
       </a-form-item>
       <a-form-item>
         <a-input
-          v-model:value="loginFormModel.verifyCode"
+          v-model:value="loginFormModel.captcha"
           placeholder="验证码"
-          :maxlength="4"
+          :maxlength="5"
           size="large"
         >
           <template #prefix> <Icon icon="ant-design:safety-outlined" /> </template>
@@ -54,7 +54,7 @@
   import { message, Modal } from 'ant-design-vue';
   import { Icon } from '@/components/basic/icon';
   import { useUserStore } from '@/store/modules/user';
-  import Api from '@/api/';
+  import { EduApi } from '@/api/';
   import { to } from '@/utils/awaitTo';
 
   const route = useRoute();
@@ -64,25 +64,25 @@
   const loading = ref(false);
   const captcha = ref('');
   const loginFormModel = ref({
-    username: 'admin',
-    password: 'a123456',
-    verifyCode: '',
-    captchaId: '',
+    phone: '18167865931',
+    password: '12345678',
+    captcha: '',
+    uuid: '',
   });
 
   const updateCaptcha = async () => {
-    const data = await Api.captcha.captchaCaptchaByImg({ width: 100, height: 50 });
-    captcha.value = data.img;
-    loginFormModel.value.captchaId = data.id;
+    const data = await EduApi.captcha.getCaptchaImage({ width: 100, height: 50 });
+    captcha.value = data.image;
+    loginFormModel.value.uuid = data.uuid;
   };
   updateCaptcha();
 
   const handleSubmit = async () => {
-    const { username, password, verifyCode } = loginFormModel.value;
-    if (username.trim() == '' || password.trim() == '') {
-      return message.warning('用户名或密码不能为空！');
+    const { phone, password, captcha } = loginFormModel.value;
+    if (phone.trim() == '' || password.trim() == '') {
+      return message.warning('手机号或密码不能为空！');
     }
-    if (!verifyCode) {
+    if (!captcha) {
       return message.warning('请输入验证码！');
     }
     message.loading('登录中...', 0);

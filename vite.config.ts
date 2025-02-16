@@ -117,14 +117,17 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
       port: 8088,
       open: true,
       proxy: {
+        '^/edu': {
+          target: 'http://school.digitalengine.asia',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/edu/, '/api'),
+        },
         '^/api': {
-          // target: 'https://nest-admin.buqiyuan.top',
           target: 'http://127.0.0.1:7001',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
         },
         '^/upload': {
-          // target: 'https://nest-admin.buqiyuan.top/upload',
           target: 'http://127.0.0.1:7001/upload',
           changeOrigin: true,
           rewrite: (path) => path.replace(new RegExp(`^/upload`), ''),

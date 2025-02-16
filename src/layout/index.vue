@@ -1,5 +1,5 @@
 <template>
-  <Layout>
+  <Layout class="top-layout">
     <Layout.Header style="padding-inline: 0">
       <div class="top-header">
         <Logo />
@@ -48,6 +48,10 @@
 </script>
 
 <style lang="less" scoped>
+  .top-layout {
+    height: 100vh;
+  }
+
   .top-header {
     display: flex;
     top: 0;
@@ -70,7 +74,6 @@
 
   .layout {
     display: flex;
-    height: 100vh;
     overflow: hidden;
 
     .ant-layout {

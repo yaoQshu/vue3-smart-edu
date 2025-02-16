@@ -44,7 +44,7 @@ export async function accountPermissions(options?: RequestOptions) {
 }
 
 /** 获取账户资料 GET /api/account/profile */
-export async function accountProfile(options?: RequestOptions) {
+export async function getCurrentUser(options?: RequestOptions) {
   return request<API.AccountInfo>('/api/account/profile', {
     method: 'GET',
     ...(options || {}),
