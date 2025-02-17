@@ -8,6 +8,7 @@
     :get-container="false"
     :width="innerWidth || width"
     :style="{ position: 'absolute' }"
+    :contentWrapperStyle="{ boxShadow: 'none' }"
     placement="bottom"
     height="64"
     @close="closeDrawer"
