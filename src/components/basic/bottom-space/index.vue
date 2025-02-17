@@ -9,8 +9,9 @@
     :width="innerWidth || width"
     :style="{ position: 'absolute' }"
     :contentWrapperStyle="{ boxShadow: 'none' }"
+    :bodyStyle="{ padding: 0 }"
     placement="bottom"
-    height="64"
+    height="65"
     @close="closeDrawer"
   >
     <template v-if="$slots.title" #title>
@@ -18,8 +19,8 @@
     </template>
     <template v-else #title>
       <Space>
-        <Button @click="emit('cancel')">Cancel</Button>
-        <Button type="primary" @click="emit('ok')">Submit</Button>
+        <Button @click="emit('cancel')">取消</Button>
+        <Button type="primary" @click="emit('ok')">批量删除</Button>
       </Space>
     </template>
   </Drawer>
@@ -53,5 +54,10 @@
 <style lang="less" scoped>
   :deep(.ant-drawer-content-wrapper) {
     box-shadow: none;
+  }
+
+  :deep(.ant-drawer-body) {
+    height: 0;
+    padding: 0;
   }
 </style>

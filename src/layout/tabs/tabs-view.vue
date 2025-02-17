@@ -1,5 +1,5 @@
 <template>
-  <div id="tabs-view" class="tabs-view">
+  <div id="tabs-view" class="tabs-view" style="position: relative">
     <div id="tabs-view-content" class="tabs-view-content" :style="{ overflow }">
       <router-view v-slot="{ Component }">
         <template v-if="Component">

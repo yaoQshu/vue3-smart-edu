@@ -11,9 +11,15 @@ export const departmentSchemas: FormSchema<DepartmentNewDto>[] = [
   },
   {
     field: 'directorUserId',
-    component: 'Input',
+    component: 'Select',
     label: '部门主管',
     rules: [{ required: true, type: 'string' }],
+    componentProps: {
+      request: async () => {
+        const teachers = await EduApi.teacher.getTeacherList();
+        return teachers.map((n) => ({ label: n.name, value: n.id }));
+      },
+    },
   },
   {
     field: 'parentId',

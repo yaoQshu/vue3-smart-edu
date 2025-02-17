@@ -9,18 +9,20 @@
       :data-request="EduApi.department.pageDepartment"
       :columns="columns"
       :row-selection="rowSelection"
+      :scroll="{ x: '100%' }"
       size="middle"
     />
   </div>
 </template>
 
 <script lang="ts" setup>
-  import { ref, computed } from 'vue';
+  import { ref, computed, watch } from 'vue';
   import { baseColumns, type TableListItem, type TableColumnItem } from './columns';
   import { departmentSchemas } from './formSchemas';
   import { useTable } from '@/components/core/dynamic-table';
   import { useFormModal } from '@/hooks/useModal/';
   import { useFormDrawer } from '@/hooks/useDrawer';
+  import { useBottomSpace } from '@/hooks/useBottomSpace';
   import { EduApi } from '@/api/';
 
   defineOptions({
@@ -38,6 +40,23 @@
   const isCheckRows = computed(() => rowSelection.value.selectedRowKeys.length);
 
   const [DynamicTable, dynamicTableInstance] = useTable();
+  const [bottomSpace] = useBottomSpace();
+
+  watch(isCheckRows, (val) => {
+    if (val) {
+      bottomSpace.show({
+        onOk: async () => {
+          await EduApi.department.batchDeleteDepartment(rowSelection.value.selectedRowKeys);
+          dynamicTableInstance?.reload();
+        },
+        onCancel: () => {
+          rowSelection.value.selectedRowKeys = [];
+        },
+      });
+    } else {
+      bottomSpace.hide();
+    }
+  });
 
   const [showModal] = useFormModal();
   const [showDrawer] = useFormDrawer();
@@ -73,19 +92,12 @@
       },
     });
 
-    const departmentList = await EduApi.department.pageDepartment({ page: 1, pageSize: 100 });
-    formRef?.updateSchema([
-      {
-        field: 'parentId',
-        componentProps: { treeData: departmentList },
-      },
-    ]);
-
     if (record.id) {
       const departmentInfo = await EduApi.department.getDepartment({ departmentId: record.id });
       formRef?.setFieldsValue({
         ...record,
         id: departmentInfo.departmentId,
+        parentId: departmentInfo.parentId,
       });
     }
   };
@@ -99,7 +111,7 @@
     ...baseColumns,
     {
       title: '操作',
-      width: 130,
+      width: 150,
       dataIndex: 'ACTION',
       hideInSearch: true,
       fixed: 'right',

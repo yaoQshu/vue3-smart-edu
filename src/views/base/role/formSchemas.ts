@@ -1,6 +1,6 @@
 import type { FormSchema } from '@/components/core/schema-form/';
-
-export const roleSchemas: FormSchema<API.RoleDto>[] = [
+import type { NewPositionDto } from '@/interfaces/position';
+export const positionSchemas: FormSchema<NewPositionDto>[] = [
   {
     field: 'name',
     component: 'Input',
@@ -8,7 +8,7 @@ export const roleSchemas: FormSchema<API.RoleDto>[] = [
     rules: [{ required: true, type: 'string' }],
   },
   {
-    field: 'menuIds',
+    field: 'resourceIds',
     component: 'Tree',
     label: '权限设置',
     componentProps: {

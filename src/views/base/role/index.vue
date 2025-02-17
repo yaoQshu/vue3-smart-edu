@@ -6,28 +6,31 @@
     </div>
     <DynamicTable
       row-key="id"
-      :data-request="EduApi.role.roleList"
+      :data-request="EduApi.position.pagePosition"
       :columns="columns"
       :row-selection="rowSelection"
+      :scroll="{ x: '100%' }"
       size="middle"
     />
   </div>
 </template>
 
 <script lang="ts" setup>
-  import { ref, computed } from 'vue';
+  import { ref, computed, watch } from 'vue';
   import { baseColumns, type TableListItem, type TableColumnItem } from './columns';
-  import { roleSchemas } from './formSchemas';
+  import { positionSchemas } from './formSchemas';
   import { useTable } from '@/components/core/dynamic-table';
   import { useFormModal } from '@/hooks/useModal/';
   import { useFormDrawer } from '@/hooks/useDrawer';
-  import { Api, EduApi } from '@/api/';
+  import { useBottomSpace } from '@/hooks/useBottomSpace';
+  import { EduApi } from '@/api/';
 
   defineOptions({
-    name: 'SystemPermissionRole',
+    name: 'SystemPosition',
   });
 
   const [DynamicTable, dynamicTableInstance] = useTable();
+  const [bottomSpace] = useBottomSpace();
 
   const rowSelection = ref({
     selectedRowKeys: [] as number[],
@@ -39,10 +42,26 @@
   // 是否勾选了表格行
   const isCheckRows = computed(() => rowSelection.value.selectedRowKeys.length);
 
+  watch(isCheckRows, (val) => {
+    if (val) {
+      bottomSpace.show({
+        onOk: async () => {
+          await EduApi.position.batchDeletePosition(rowSelection.value.selectedRowKeys);
+          dynamicTableInstance?.reload();
+        },
+        onCancel: () => {
+          rowSelection.value.selectedRowKeys = [];
+        },
+      });
+    } else {
+      bottomSpace.hide();
+    }
+  });
+
   const [showModal] = useFormModal();
   const [showDrawer] = useFormDrawer();
 
-  const getCheckedKeys = (checkedList: number[], menus: API.MenuItemInfo[], total = []) => {
+  const getCheckedKeys = (checkedList: number[], menus: MenuResourceDto[], total = []) => {
     return menus.reduce<number[]>((prev, curr) => {
       if (curr.children?.length) {
         getCheckedKeys(checkedList, curr.children, total);
@@ -59,52 +78,49 @@
    * @description 打开新增/编辑弹窗
    */
   const openRoleDrawer = async (record: Partial<TableListItem>) => {
+    console.log(record);
     const [formRef] = await showDrawer({
       drawerProps: {
         title: `${record.id ? '编辑' : '新增'}角色`,
         onFinish: async (values) => {
-          record.id && (values.roleId = record.id);
-          const menusRef = formRef?.compRefMap.get('menuIds')!;
+          record.id && (values.positionId = record.id);
+          console.log('values', values);
+          const menusRef = formRef?.compRefMap.get('resourceIds')!;
           const params = {
             ...values,
-            menuIds: [...menusRef.halfCheckedKeys, ...menusRef.checkedKeys],
+            resourceIds: [...menusRef.halfCheckedKeys, ...menusRef.checkedKeys],
           };
-          if (record.id) {
-            await EduApi.role.roleUpdate({ id: record.id }, params);
-          } else {
-            await EduApi.role.roleCreate(params);
-          }
-
+          await EduApi.position.setPosition(params);
           dynamicTableInstance?.reload();
         },
       },
       formProps: {
         labelWidth: 100,
         layout: 'vertical',
-        schemas: roleSchemas,
+        schemas: positionSchemas,
       },
     });
 
-    const menuTreeData = await Api.systemMenu.menuList({});
+    const menuTreeData = await EduApi.position.allResource({});
 
     formRef?.updateSchema([
       {
-        field: 'menuIds',
+        field: 'resourceIds',
         componentProps: { treeData: menuTreeData },
       },
     ]);
     // 如果是编辑的话，需要获取角色详情
     if (record.id) {
-      const roleInfo = await EduApi.role.roleInfo({ id: record.id });
+      const positionInfo = await EduApi.position.getPosition({ positionId: record.id });
 
       formRef?.setFieldsValue({
         ...record,
-        menuIds: getCheckedKeys(roleInfo.menuIds, menuTreeData),
+        resourceIds: getCheckedKeys(positionInfo.resourceIds, menuTreeData),
       });
     }
   };
   const delRowConfirm = async (record: TableListItem) => {
-    await EduApi.role.roleDelete({ id: record.id });
+    await EduApi.position.deletePosition({ id: record.id });
     dynamicTableInstance?.reload();
   };
 
@@ -112,7 +128,7 @@
     ...baseColumns,
     {
       title: '操作',
-      width: 130,
+      width: 150,
       dataIndex: 'ACTION',
       hideInSearch: true,
       fixed: 'right',
@@ -120,7 +136,7 @@
         {
           label: '编辑',
           onClick: () => {
-            openMenuModal(record);
+            openRoleDrawer(record);
           },
         },
         {

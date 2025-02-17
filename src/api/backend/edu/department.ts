@@ -54,3 +54,14 @@ export async function deleteDepartment(body: DepartmentNewDto, options?: Request
     ...(options || { successMsg: '删除成功' }),
   });
 }
+
+export async function batchDeleteDepartment(body: any, options?: RequestOptions) {
+  return request<any>('/edu/department/delete/batch', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || { successMsg: '删除成功' }),
+  });
+}

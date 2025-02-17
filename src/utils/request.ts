@@ -149,11 +149,9 @@ export async function request(_url: string | RequestOptions, _config: RequestOpt
 
     // 页面代码需要获取 code，data，message 等信息时，需要将 isReturnResult 设置为 false
     if (!isReturnResult) {
-      console.log('data', data);
       return data;
     } else {
-      console.log('data2', data);
-      if (data.data?.hasOwnProperty('total')) {
+      if (data?.data?.hasOwnProperty('total')) {
         return {
           items: data.data.records,
           meta: {

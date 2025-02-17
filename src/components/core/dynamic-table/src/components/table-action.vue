@@ -92,7 +92,6 @@
         const popConfirm = item.popConfirm;
 
         if (modalConfirm && !popConfirm) {
-          console.log('modalConfirm', modalConfirm);
           item.onClick = async () => {
             Modal.confirm({
               title: modalConfirm.title,

@@ -1,6 +1,7 @@
 import type { TableColumn } from '@/components/core/dynamic-table';
+import type { TeacherListDto } from '@/interfaces/teacher';
 
-export type TableListItem = API.RoleEntity;
+export type TableListItem = TeacherListDto;
 export type TableColumnItem = TableColumn<TableListItem>;
 
 export const baseColumns: TableColumnItem[] = [
@@ -12,7 +13,8 @@ export const baseColumns: TableColumnItem[] = [
   {
     title: '教师照片',
     width: 180,
-    dataIndex: 'value',
+    dataIndex: 'headImgUrl',
+    hideInSearch: true,
   },
   {
     title: '手机号',
@@ -22,11 +24,17 @@ export const baseColumns: TableColumnItem[] = [
   {
     title: '角色',
     width: 200,
-    dataIndex: 'role',
+    dataIndex: 'roles',
+    customRender: ({ record }) => {
+      return record.roles.map((item) => item.name).join(',');
+    },
   },
   {
     title: '部门',
     width: 200,
-    dataIndex: 'department',
+    dataIndex: 'departments',
+    customRender: ({ record }) => {
+      return record.departments.map((item) => item.name).join(',');
+    },
   },
 ];
