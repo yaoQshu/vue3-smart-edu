@@ -23,7 +23,7 @@
   import StudentReport from './student-report.vue';
   import { schemas } from './studentReportFormSchemas';
   import { useDrawer, useFormDrawer } from '@/hooks/useDrawer/';
-
+  import { EduApi } from '@/api';
   const activeKey = ref('1');
 
   const formTab = ref<InstanceType<typeof FormTab>>();
@@ -38,11 +38,11 @@
     studentReportRef.value?.hideBottomSpace();
   };
 
-  const onClickStudentInfo = (record: any) => {
-    fnDrawer.show({
+  const onClickStudentInfo = async (record: any) => {
+    await fnDrawer.show({
       title: '新增学生信息',
       content: () => {
-        return <FormTab ref={formTab} />;
+        return <FormTab ref={formTab} record={record} />;
       },
       onOk: () => {
         formTab.value?.submit();
@@ -54,13 +54,32 @@
     const [formRef] = await showDrawer({
       drawerProps: {
         title: `${record.id ? '编辑' : '新增'}报到`,
+        onFinish: async (values) => {
+          record.id && (values.positionId = record.id);
+          console.log('values', values);
+          const menusRef = formRef?.compRefMap.get('resourceIds')!;
+          const params = {
+            ...values,
+            resourceIds: [...menusRef.halfCheckedKeys, ...menusRef.checkedKeys],
+          };
+          await EduApi.position.setPosition(params);
+        },
       },
       formProps: {
         labelWidth: 100,
-        schemas,
         layout: 'vertical',
+        schemas: schemas,
       },
     });
+
+    // 如果是编辑的话，需要获取角色详情
+    if (record.id) {
+      // const positionInfo = await EduApi.student.getReportDetail({ studentId: record.id });
+
+      formRef?.setFieldsValue({
+        ...record,
+      });
+    }
   };
 </script>
 <style scoped>

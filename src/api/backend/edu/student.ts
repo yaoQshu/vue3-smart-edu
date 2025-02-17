@@ -45,3 +45,11 @@ export async function getRelationList(options?: RequestOptions) {
     ...(options || {}),
   });
 }
+
+export async function getReportDetail(params: { studentId: number }, options?: RequestOptions) {
+  return request<StudentAddDto>(`/edu/student/detail`, {
+    method: 'GET',
+    params: { ...params },
+    ...(options || {}),
+  });
+}

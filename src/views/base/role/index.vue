@@ -78,7 +78,6 @@
    * @description 打开新增/编辑弹窗
    */
   const openRoleDrawer = async (record: Partial<TableListItem>) => {
-    console.log(record);
     const [formRef] = await showDrawer({
       drawerProps: {
         title: `${record.id ? '编辑' : '新增'}角色`,

@@ -24,6 +24,10 @@
     fieldMapToTime: [['fieldTime', ['startTime', 'endTime'], 'YYYY-MM']],
   });
 
+  function setFieldsValue(values: any) {
+    dynamicFormRef.setFieldsValue(values);
+  }
+
   // 点击提交
   function confirm() {
     console.log('dynamicFormRef', dynamicFormRef);
@@ -32,6 +36,7 @@
   }
 
   defineExpose({
+    setFieldsValue,
     confirm,
   });
 </script>
