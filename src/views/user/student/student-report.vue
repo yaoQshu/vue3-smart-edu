@@ -21,6 +21,8 @@
     name: 'NewStudent',
   });
 
+  const emit = defineEmits(['edit']);
+
   const [DynamicTable, dynamicTableInstance] = useTable();
 
   const [showModal] = useFormModal();
@@ -67,68 +69,6 @@
     }, total);
   };
 
-  const openTeacherDrawer = async (record: Partial<TableListItem>) => {
-    const [formRef] = await showDrawer({
-      drawerProps: {
-        title: `${record.id ? '编辑' : '新增'}教师`,
-      },
-      formProps: {
-        labelWidth: 100,
-        schemas: teacherSchemas,
-        layout: 'vertical',
-      },
-    });
-  };
-
-  /**
-   * @description 打开新增/编辑弹窗
-   */
-  const openMenuModal = async (record: Partial<TableListItem>) => {
-    const [formRef] = await showModal({
-      modalProps: {
-        title: `${record.id ? '编辑' : '新增'}角色`,
-        width: '50%',
-        onFinish: async (values) => {
-          record.id && (values.roleId = record.id);
-          const menusRef = formRef?.compRefMap.get('menuIds')!;
-          const params = {
-            ...values,
-            menuIds: [...menusRef.halfCheckedKeys, ...menusRef.checkedKeys],
-          };
-          console.log('新增/编辑角色', params);
-          if (record.id) {
-            await Api.systemRole.roleUpdate({ id: record.id }, params);
-          } else {
-            await Api.systemRole.roleCreate(params);
-          }
-
-          dynamicTableInstance?.reload();
-        },
-      },
-      formProps: {
-        labelWidth: 100,
-        schemas: roleSchemas,
-      },
-    });
-
-    const menuTreeData = await Api.systemMenu.menuList({});
-
-    formRef?.updateSchema([
-      {
-        field: 'menuIds',
-        componentProps: { treeData: menuTreeData },
-      },
-    ]);
-    // 如果是编辑的话，需要获取角色详情
-    if (record.id) {
-      const roleInfo = await Api.systemRole.roleInfo({ id: record.id });
-
-      formRef?.setFieldsValue({
-        ...record,
-        menuIds: getCheckedKeys(roleInfo.menuIds, menuTreeData),
-      });
-    }
-  };
   const delRowConfirm = async (record: TableListItem) => {
     await Api.systemRole.roleDelete({ id: record.id });
     dynamicTableInstance?.reload();
@@ -150,7 +90,7 @@
         {
           label: '编辑',
           onClick: () => {
-            openMenuModal(record);
+            emit('edit', record);
           },
         },
         {

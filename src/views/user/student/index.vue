@@ -2,10 +2,10 @@
   <div class="content-box">
     <a-tabs v-model:activeKey="activeKey" @change="onChangeTab">
       <a-tab-pane key="1" tab="学生信息管理">
-        <student-info ref="studentInfoRef" />
+        <student-info ref="studentInfoRef" @edit="onClickStudentInfo" />
       </a-tab-pane>
       <a-tab-pane key="2" tab="新生报到">
-        <student-report ref="studentReportRef" />
+        <student-report ref="studentReportRef" @edit="onClickNewStudent" />
       </a-tab-pane>
       <template #rightExtra>
         <a-button v-if="activeKey === '1'" type="primary" @click="onClickStudentInfo"
@@ -38,7 +38,7 @@
     studentReportRef.value?.hideBottomSpace();
   };
 
-  const onClickStudentInfo = () => {
+  const onClickStudentInfo = (record: any) => {
     fnDrawer.show({
       title: '新增学生信息',
       content: () => {
@@ -50,7 +50,7 @@
     });
   };
 
-  const onClickNewStudent = async (record: Partial<TableListItem>) => {
+  const onClickNewStudent = async (record: any) => {
     const [formRef] = await showDrawer({
       drawerProps: {
         title: `${record.id ? '编辑' : '新增'}报到`,

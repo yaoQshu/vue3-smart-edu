@@ -1,5 +1,6 @@
 import type { TableColumn } from '@/components/core/dynamic-table';
 import type { StudentListDto } from '@/interfaces/student';
+import { EduApi } from '@/api';
 
 export type TableListItem = StudentListDto;
 export type TableColumnItem = TableColumn<TableListItem>;
@@ -14,11 +15,35 @@ export const baseColumns: TableColumnItem[] = [
     title: '年级',
     width: 180,
     dataIndex: 'grade',
+    formItemProps: {
+      component: 'Select',
+      componentProps: ({ formInstance, formModel }) => ({
+        request: async () => {
+          const { items = [] } = await EduApi.department.pageDepartment({ page: 1 });
+          return items.map((item) => ({
+            label: item.name,
+            value: item.id,
+          }));
+        },
+      }),
+    },
   },
   {
     title: '班级',
     width: 200,
     dataIndex: 'clazz',
+    formItemProps: {
+      component: 'Select',
+      componentProps: ({ formInstance, formModel }) => ({
+        request: async () => {
+          const { items = [] } = await EduApi.department.pageDepartment({ page: 1 });
+          return items.map((item) => ({
+            label: item.name,
+            value: item.id,
+          }));
+        },
+      }),
+    },
   },
   {
     title: '性别',
