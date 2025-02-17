@@ -167,6 +167,16 @@ const routes: Array<RouteRecordRaw> = [
             },
             component: () => import('@/views/demos/tables/lol-table/heroInfo.vue'),
           },
+          {
+            path: 'tab',
+            name: `${moduleName}-table-tab`,
+            meta: {
+              title: 'TabTable',
+              icon: 'ant-design:desktop-outlined',
+              keepAlive: false,
+            },
+            component: () => import('@/views/demos/tables/tab-table/index.vue'),
+          },
         ],
       },
       {

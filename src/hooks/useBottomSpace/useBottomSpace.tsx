@@ -1,36 +1,38 @@
-import { createVNode, ref, render, getCurrentInstance, nextTick } from 'vue';
-import { MyBottomSpace, type MyBottomSpaceInstance } from './bottomSpace';
-import type { App, ComponentInternalInstance, FunctionalComponent } from 'vue';
+import { ref, getCurrentInstance, nextTick, createVNode, render } from 'vue';
+import { DrawerWrapper, type DrawerWrapperInstance } from './drawer';
+import type { App, FunctionalComponent, ComponentInternalInstance } from 'vue';
+import type { HookDrawerProps } from './types';
+
 let _app: App;
 
-export const useBottomSpace = () => {
-  let _bottomSpaceInstance: ComponentInternalInstance;
-  const bottomSpaceRef = ref<MyBottomSpaceInstance>();
+export function useBottomSpace() {
+  let _modalInstance: ComponentInternalInstance;
+  const drawerRef = ref<DrawerWrapperInstance>();
   const appContext = _app?._context || getCurrentInstance()?.appContext;
   // 当前模态框是否处于App.vue上下文中
   const isAppChild = ref(false);
 
-  const getBottomSpaceInstance = async () => {
+  const getModalInstance = async () => {
     await nextTick();
-    if (isAppChild.value && bottomSpaceRef.value) {
-      return bottomSpaceRef.value;
+    if (isAppChild.value && drawerRef.value) {
+      return drawerRef.value;
     }
 
-    if (_bottomSpaceInstance) {
-      return _bottomSpaceInstance;
+    if (_modalInstance) {
+      return _modalInstance;
     }
-    const container = document.createElement('div');
-    const vnode = createVNode(MyBottomSpace);
+    const container = document.getElementById('tabs-view');
+    const vnode = createVNode(DrawerWrapper);
     vnode.appContext = appContext;
-    render(vnode, container);
-    _bottomSpaceInstance = vnode.component!;
-    _bottomSpaceInstance.props.closeBottomSpace = hide;
-    return _bottomSpaceInstance;
+    render(vnode, container!);
+    _modalInstance = vnode.component!;
+    _modalInstance.props.closeDrawer = hide;
+    return _modalInstance;
   };
 
   const setProps = async (_props) => {
-    const instance = await getBottomSpaceInstance();
-    if (Object.is(instance, bottomSpaceRef.value)) {
+    const instance = await getModalInstance();
+    if (Object.is(instance, drawerRef.value)) {
       // @ts-ignore
       instance?.setProps?.(_props);
     } else {
@@ -40,38 +42,38 @@ export const useBottomSpace = () => {
   };
 
   const hide = () => {
-    setProps({ visible: false });
+    setProps({ open: false });
   };
 
-  const show = async (props: any) => {
+  const show = async (props: HookDrawerProps) => {
     setProps({
       ...props,
-      closeBottomSpace: hide,
-      visible: true,
+      closeDrawer: hide,
+      open: true,
     });
 
     await nextTick();
   };
 
-  interface BottomSpaceRenderComp<T> extends FunctionalComponent<T> {
+  interface ModalRenderComp<T> extends FunctionalComponent<T> {
     show: typeof show;
     hide: typeof hide;
     setProps: typeof setProps;
   }
 
-  const BottomSpaceRender: BottomSpaceRenderComp<any> = (props, { attrs, slots }) => {
+  const ModalRender: ModalRenderComp<HookDrawerProps> = (props, { attrs, slots }) => {
     isAppChild.value = true;
-    return <MyBottomSpace ref={bottomSpaceRef} {...{ ...attrs, ...props }} v-slots={slots} />;
+    return <DrawerWrapper ref={drawerRef} {...{ ...attrs, ...props }} v-slots={slots} />;
   };
 
-  BottomSpaceRender.show = show;
-  BottomSpaceRender.hide = hide;
-  BottomSpaceRender.setProps = setProps;
+  ModalRender.show = show;
+  ModalRender.hide = hide;
+  ModalRender.setProps = setProps;
 
-  // ;[show, hide].forEach(fn => BottomSpaceRender[fn.name] = fn)
+  // ;[show, hide].forEach(fn => ModalRender[fn.name] = fn)
 
-  return [BottomSpaceRender, bottomSpaceRef] as const;
-};
+  return [ModalRender, drawerRef] as const;
+}
 
 export type BottomSpaceInstance = ReturnType<typeof useBottomSpace>;
 
