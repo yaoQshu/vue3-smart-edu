@@ -32,7 +32,7 @@ const controller = new AbortController();
 const service = axios.create({
   baseURL: baseApiUrl,
   // adapter: 'fetch',
-  timeout: 10000,
+  timeout: 60000,
   signal: controller.signal,
   paramsSerializer(params) {
     return qs.stringify(params, { arrayFormat: 'brackets' });
@@ -45,7 +45,7 @@ service.interceptors.request.use(
     const token = userStore.token;
     if (token && config.headers) {
       // 请求头token信息，请根据实际情况进行修改
-      config.headers['x-token'] = `${token}`;
+      config.headers['Authorization'] = `${token}`;
     }
     return config;
   },
@@ -56,6 +56,9 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
   (response: AxiosResponse<BaseResponse>) => {
+    if (response.request.responseType == 'blob') {
+      return response;
+    }
     const res = response.data;
 
     // if the custom code is not 200, it is judged as an error.
@@ -87,6 +90,10 @@ service.interceptors.response.use(
     }
   },
   (error) => {
+    if (error.response?.status == 401) {
+      // TODO
+    }
+    console.log('error', error);
     if (!(error instanceof CanceledError)) {
       // 处理 422 或者 500 的错误异常提示
       const errMsg = error?.response?.data?.message ?? UNKNOWN_ERROR;
@@ -151,18 +158,6 @@ export async function request(_url: string | RequestOptions, _config: RequestOpt
     if (!isReturnResult) {
       return data;
     } else {
-      if (data?.data?.hasOwnProperty('total')) {
-        return {
-          items: data.data.records,
-          meta: {
-            itemCount: data.data.total,
-            totalItems: data.data.total,
-            itemsPerPage: data.data.size,
-            totalPages: data.data.pages,
-            currentPage: data.data.current,
-          },
-        };
-      }
       return data.data;
     }
   } catch (error: any) {
