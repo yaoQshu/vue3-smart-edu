@@ -2,7 +2,6 @@
   import { ref, computed, watch } from 'vue';
   import { PlusOutlined } from '@ant-design/icons-vue';
   import { message, Upload } from 'ant-design-vue';
-  import { getAvatarUrl } from './columns';
   import type { UploadFile, UploadProps } from 'ant-design-vue';
   import Api from '@/api';
 
@@ -21,15 +20,15 @@
   const previewTitle = ref('');
 
   const avatarUrl = computed(() => {
-    return getAvatarUrl(modelValue.value!);
+    return modelValue.value!;
   });
 
-  const stop = watch(modelValue, (avatar) => {
-    if (avatar && !fileList.value.length) {
+  const stop = watch(modelValue, (val) => {
+    if (val && !fileList.value.length) {
       fileList.value = [
         {
           uid: `vc-upload-${Date.now()}-1`,
-          name: avatar.split('/').at(-1)!,
+          name: avatarUrl.value.split('/').at(-1)!,
           status: 'done',
           url: avatarUrl.value,
         },
@@ -52,8 +51,8 @@
   };
 
   const uploadAvatar = async (file: FileType) => {
-    const { filename } = await Api.toolsUpload.uploadUpload({ file });
-    modelValue.value = filename;
+    const dto = await Api.sysUpload.uploadFile({ file });
+    modelValue.value = dto.url;
   };
 
   const customRequest: UploadProps['customRequest'] = async (options) => {
@@ -77,12 +76,13 @@
     previewTitle.value = '';
   };
   const handlePreview = async (file: UploadFile) => {
-    if (!file.url && !file.preview) {
-      file.preview = avatarUrl.value;
+    console.log('file', file);
+    if (!modelValue.value) {
+      return;
     }
-    previewImage.value = file.url || (file.preview as string);
+    previewImage.value = modelValue.value;
     previewVisible.value = true;
-    previewTitle.value = file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1);
+    previewTitle.value = file.fileName || modelValue.value.split('/').at(-1) || '';
   };
 </script>
 
